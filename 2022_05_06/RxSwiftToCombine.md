@@ -75,5 +75,58 @@ func tryMap<T>(_ transform: (Output) throws -> T)
                                   -> Result<T, Error>.Pulbisher
 ```
 `map`의 경우에는 반드시 upstream 에서 받은 **Data Type만 return** 해주는데, `tryMap`의 경우에는 **Result 타입을 return** 해주고 있다.  
-즉, `tryMap`은 Data Type뿐만 아니라 map 내부에서 발생된 Error를 별도로 핸들링 할 수 있다.
+즉, `tryMap`은 Data Type뿐만 아니라 map 내부에서 발생된 Error를 별도로 핸들링 할 수 있다.  
 
+---
+- ### Combine Operators (결합 연산자)
+> Combine에는 총 3가지의 결합 연산자가 있다.
+ - Merge (Merge3, Merge4, Merge5, Merge6,Merge7, Merge8, MergeMany)
+ - CombineLatest (CombineLatest3, CombineLatest4)
+ - Zip (Zip3,Zip4)
+‼️ RxSwift와 다른점은 **한번에 묶을 수 있는 스트림수를 표현**해서 Struct 명을 가진다.
+그 이상의 스트림은 어떻게 나누느냐? ➡️ 최대 개수만큼 나눠서 구현을 할 수 있으나 번거로운건 마찬가지다.  
+
+---
+- ### Subjects
+> Publisher 이면서 Subscriber 이다.
+
+|Combine|RxSwift|
+|:---:|:---:|
+|PassthroughSubject|PublishSubject|
+|❌ |ReplaySubject|
+|CurrentValueSubject|BehaviorSubject|
+
+- PassthroughSubject ↔️ PublishSubject 
+```swift 
+class PassthroughSubject {
+  public init()
+  ...
+ }
+
+class PublishSubject {
+  public override init()
+  ...
+ }
+```
+PublishSubject가 init을 가지지 않는것처럼 PassthroughSubject도 동일하다.
+
+- CurrentValueSubject ↔️ BehaviorSubject 
+```swift 
+class CurrentValueSubject {
+  public init(_ value: Output)
+  ...
+ }
+
+class BehaviorSubject {
+  public override init(value: Element)
+  ...
+ }
+```
+BehaviorSubject가 init값을 가지는 것처럼 CurrentValueSubject 또한 init값을 가진다.  
+
+---
+- ### Cancellable ↔️ Disposable  
+RxSwift에서 생성한 Observable의 구독을 끊어주지 않으면 스트림이 영원히 남아있게 되고, 메모리 누수가 일어나게 된다.  
+이 스트림을 종료시켜주는 Dispose라는 개념이 있다.  
+Combine에도 비슷한 개념으로 Cancellable과 AnyCancellable이 있다. deinit 시점에 Publisher에 대해 AutoCancle이 일어나게 된다.  
+RxSwift의 DisposeBag 개념은 없으나 전수열님이 CancleBag을 만드셨다.
